@@ -6,7 +6,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
 
-const usersRoutes = require('./routes/users');
+const userRoutes = require('./routes/user');
 /**
  * Link to MongoDB ***********************************************************************************
  */
@@ -29,6 +29,6 @@ app.use((req, res, next) => {
 });
 
 /** Users middlewear */
-app.use('/api/auth', usersRoutes);
+app.use('/api/auth', userRoutes);
 
 module.exports = app;
