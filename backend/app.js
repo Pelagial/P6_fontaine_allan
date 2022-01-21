@@ -4,9 +4,13 @@
 
 const express = require('express');
 const mongoose = require('mongoose');
+const path = require('path');
 const app = express();
 
+/** import requires files to use routes */
 const userRoutes = require('./routes/user');
+const sauceRoutes = require('./routes/sauce');
+
 /**
  * Link to MongoDB ***********************************************************************************
  */
@@ -15,8 +19,6 @@ const userRoutes = require('./routes/user');
    useUnifiedTopology: true })
 .then(() => console.log('Connexion à MongoDB réussie !'))
 .catch(() => console.log('Connexion à MongoDB échouée !'));
-
-app.use(express.json());
 
 /**
  * Prevent Cors issues ***********************************************************************************
@@ -28,7 +30,14 @@ app.use((req, res, next) => {
     next();
 });
 
-/** Users middlewear */
+app.use(express.json());
+
+app.use('/images', express.static(path.join(__dirname, 'images')))
+
+/** Users Routes use */
 app.use('/api/auth', userRoutes);
+
+/** Sauces Routes use */
+app.use('/api/sauces', sauceRoutes);
 
 module.exports = app;
