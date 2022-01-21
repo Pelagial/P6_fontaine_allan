@@ -1,5 +1,5 @@
 /**
- * APP CREATION AND SETTINGS ***********************************************************************************
+ * APP SETTINGS ***********************************************************************************
  */
 
 
@@ -11,6 +11,7 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const path = require('path');
 const app = express();
+require('dotenv').config();
 
 /** import requires js files to use routes */
 const userRoutes = require('./routes/user');
@@ -19,7 +20,7 @@ const sauceRoutes = require('./routes/sauce');
 /**
  * Link to MongoDB ***********************************************************************************
  */
- mongoose.connect('mongodb+srv://admin:adminPelagial52@cluster0.xqxdf.mongodb.net/Cluster0?retryWrites=true&w=majority',
+ mongoose.connect(process.env.SECRET_DB,
  { useNewUrlParser: true,
    useUnifiedTopology: true })
 .then(() => console.log('Connexion à MongoDB réussie !'))
@@ -38,8 +39,13 @@ app.use((req, res, next) => {
 /**
  * Some security configuration ***********************************************************************************
  */
-app.use(helmet());
-app.disable('x-powered-by');
+
+/** Exclude crossOriginResourcePolicy from helmet config to use images */
+ app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+  })
+);
 
 /** Reconize Req Object as JSON Object */
 app.use(express.json());
