@@ -1,8 +1,21 @@
-const User = require('../models/User');
+/**
+ * USER CTRL SETTINGS ***********************************************************************************
+ */
+
+/** IMPORT ***********************************************/
+
+/** General import */
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+/** Js files import */
+const User = require('../models/User');
 
+/** EXPORT ***********************************************/
+
+/** Signup ctrl 
+* Hash the password and send it with the email to DDB
+*/
 exports.signup = (req, res, next) => {
     bcrypt.hash(req.body.password, 10)
       .then(hash => {
@@ -17,6 +30,9 @@ exports.signup = (req, res, next) => {
       .catch(error => res.status(500).json({ error }));
 };
 
+/** Login ctrl 
+* Compare Hash password and email in form with DDB
+*/
 exports.login = (req, res, next) => {
   User.findOne({ email: req.body.email })
     .then(user => {

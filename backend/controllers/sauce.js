@@ -1,14 +1,28 @@
-const Sauce = require('../models/Sauce');
+/**
+ * SAUCE CTRL SETTINGS ***********************************************************************************
+ */
+
+/** IMPORT ***********************************************/
+
+/** General import */
 const fs = require('fs');
+
+/** Js files import */
+const Sauce = require('../models/Sauce');
+
+/** EXPORT ***********************************************/
 
 /**
  * Get ctrls */
+
+/** Find all sauces in DDB */
 exports.getAllSauces = (req, res, next) => {
   Sauce.find()
     .then((sauces) => res.status(200).json(sauces))
     .catch((error) => res.status(404).json({ error }));
 };
 
+/** Find a sauce using is Id in DDB */
 exports.getOneSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id })
     .then(sauce => res.status(200).json(sauce))
@@ -17,6 +31,8 @@ exports.getOneSauce = (req, res, next) => {
 
 /**
  * Post ctrls */
+
+/** Create a sauce in DDB */
 exports.createSauce = (req, res, next) => {
   const sauceObject = JSON.parse(req.body.sauce)
   delete sauceObject._id;
@@ -38,6 +54,8 @@ exports.createSauce = (req, res, next) => {
 
 /**
  * Put ctrl */
+
+/** Update a sauce in DDB */
 exports.updateSauce = (req, res, next) => {
     const sauceObject = req.file ?
       {
@@ -51,6 +69,8 @@ exports.updateSauce = (req, res, next) => {
 
 /**
  * Delete ctrl */
+
+/** Delete a sauces and is image from DDB */
 exports.deleteSauce = (req, res, next) => {
   Sauce.findOne({ _id : req.params.id })
   .then(sauce => {
@@ -67,43 +87,46 @@ exports.deleteSauce = (req, res, next) => {
 
 /**
  * Like ctrl */
+
+/** Like and Dislike a sauces in DDB */
 exports.likeDislikeSauce = (req, res, next) => {
+  /** Collect what we need from sauce object in DDB */
   let like = req.body.like
   let userId = req.body.userId
   let sauceId = req.params.id
   
   switch (like) {
+    /** Like part */
     case 1 :
         Sauce.updateOne({ _id: sauceId }, { $push: { usersLiked: userId }, $inc: { likes: +1 }})
-          .then(() => res.status(200).json({ message: `J'aime` }))
+          .then(() => res.status(200).json())
           .catch((error) => res.status(400).json({ error }))
             
       break;
 
+    /** Updated like and dislike count */
     case 0 :
         Sauce.findOne({ _id: sauceId })
            .then((sauce) => {
             if (sauce.usersLiked.includes(userId)) { 
               Sauce.updateOne({ _id: sauceId }, { $pull: { usersLiked: userId }, $inc: { likes: -1 }})
-                .then(() => res.status(200).json({ message: `Neutre` }))
+                .then(() => res.status(200).json())
                 .catch((error) => res.status(400).json({ error }))
             }
             if (sauce.usersDisliked.includes(userId)) { 
               Sauce.updateOne({ _id: sauceId }, { $pull: { usersDisliked: userId }, $inc: { dislikes: -1 }})
-                .then(() => res.status(200).json({ message: `Neutre` }))
+                .then(() => res.status(200).json())
                 .catch((error) => res.status(400).json({ error }))
             }
           })
           .catch((error) => res.status(404).json({ error }))
       break;
-
+    
+    /** Dislike part */
     case -1 :
         Sauce.updateOne({ _id: sauceId }, { $push: { usersDisliked: userId }, $inc: { dislikes: +1 }})
-          .then(() => { res.status(200).json({ message: `Je n'aime pas` }) })
+          .then(() => { res.status(200).json() })
           .catch((error) => res.status(400).json({ error }))
       break;
-      
-      default:
-        console.log(error);
   }
 };

@@ -1,5 +1,14 @@
+/**
+ * AUTHORIZE MIDDLEWARE SETTINGS ***********************************************************************************
+ */
+
+/** IMPORT ***********************************************/
+
+/** General import */
 const jwt = require('jsonwebtoken');
 
+/** EXPORT ***********************************************/
+/** Compare that the actual token is the same as the decoded token */
 module.exports = (req, res, next) => {
   try {
     const token = req.headers.authorization.split(' ')[1];

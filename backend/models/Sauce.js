@@ -1,5 +1,13 @@
+/**
+ * SAUCE MODEL AND SETTINGS ***********************************************************************************
+ */
+
+/** IMPORT ***********************************************/
+
+/** General import */
 const mongoose = require('mongoose')
 
+/** Schema creation */
 const sauceSchema = mongoose.Schema({
   userId: { type: String, required: true },
   name: { type: String, required: true },
@@ -14,4 +22,5 @@ const sauceSchema = mongoose.Schema({
   usersDisliked: { type: [String], required: true},
 })
 
+/** EXPORT ***********************************************/
 module.exports = mongoose.model('Sauce', sauceSchema)
